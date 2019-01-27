@@ -11,18 +11,13 @@ import SearchPage from './components/SearchPage';
  */
 class BooksApp extends Component {
     state = {
-        books: []
+        books: [],
+        loading: true
     };
 
-    /**
-     * Get books from the Books API and updates the component state.
-     */
-    getBooks = () => {
-        BooksAPI.getAll().then(books => this.setState({ books }));
-    }
-
-    componentDidMount() {
-        this.getBooks();
+    async componentDidMount() {
+        const books = await BooksAPI.getAll();
+        this.setState({ books, loading: false });
     }
 
     /**
@@ -31,8 +26,13 @@ class BooksApp extends Component {
      * @param {string} shelf
      */
     changeShelf = (book, shelf) => {
-        BooksAPI.update(book, shelf)
-            .then((res) => this.getBooks());
+        BooksAPI.update(book, shelf);
+
+        book.shelf = shelf;
+
+        this.setState(prevState => ({
+            books: prevState.books.filter(b => b.id !== book.id).concat([book])
+        }));
     }
 
     /**
@@ -48,14 +48,18 @@ class BooksApp extends Component {
         return (
             <div className="app">
                 <Route exact path="/" render={({ history }) => {
-                    return <MyReadsPage
+                    return this.state.loading === true 
+                    ? <h3>Loading...</h3>
+                    : <MyReadsPage
                         onSearchBooks={() => history.push("/search")}
                         onChangeShelf={this.changeShelf}
                         onGetBookShelf={this.getBookShelf}
                         books={this.state.books} />
                 }} />
                 <Route path="/search" render={() => {
-                    return <SearchPage
+                    return this.state.loading === true
+                    ? <h3>Loading...</h3>
+                    : <SearchPage
                         onChangeShelf={this.changeShelf}
                         onGetBookShelf={this.getBookShelf} />
                 }} />
