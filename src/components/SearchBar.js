@@ -9,47 +9,47 @@ import _ from 'lodash';
  * @author [Paulo Ribeiro](https://github.com/paulo-ribeiro)
  */
 class SearchBar extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      query: ""
-    };
+        this.state = {
+            query: ""
+        };
 
-    this.handleSearch = _.debounce(this.handleSearch, 500);
-  }
+        this.handleSearch = _.debounce(this.handleSearch, 500);
+    }
 
-  /**
-   * Handles changes in the SearchBar text input.
-   * Captures inserted text and calls onSearch through props.
-   * @param {Object} e - input event
-   */
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-    this.handleSearch();
-  }
+    /**
+     * Handles changes in the SearchBar text input.
+     * Captures inserted text and calls onSearch through props.
+     * @param {Object} e - input event
+     */
+    handleChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+        this.handleSearch();
+    }
 
-  handleSearch = () => this.props.onSearch(this.state.query);
+    handleSearch = () => this.props.onSearch(this.state.query);
 
-  render() {
-    return (
-      <div className="search-books-bar">
-        <Link className="close-search" to="/">Close</Link>
-        <div className="search-books-input-wrapper">
-          <input
-            type="text"
-            name="query"
-            placeholder="Search by title or author"
-            onChange={this.handleChange}
-            value={this.state.query} />
-        </div>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className="search-books-bar">
+                <Link className="close-search" to="/">Close</Link>
+                <div className="search-books-input-wrapper">
+                    <input
+                        type="text"
+                        name="query"
+                        placeholder="Search by title or author"
+                        onChange={this.handleChange}
+                        value={this.state.query} />
+                </div>
+            </div>
+        );
+    }
 }
 
 SearchBar.propTypes = {
-  onSearch: PropTypes.func.isRequired
+    onSearch: PropTypes.func.isRequired
 };
 
 export default SearchBar;
